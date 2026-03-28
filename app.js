@@ -986,6 +986,155 @@ window.addEventListener('online', handleOnlineStatus);
 window.addEventListener('offline', () => showToast('📵 Offline mode - Data saved locally', ''));
 
 // ===========================
+// PRE-LOAD CUSTOMERS
+// ===========================
+function seedCustomers() {
+  const existing = DB.get('customers');
+  if (existing.length > 0) return; // Already seeded
+
+  const defaults = [
+  {id: uuid(), name: '30 Bags Adumasa', phone: '0553180935', createdAt: Date.now()},
+  {id: uuid(), name: 'Abawaa Adumasa Costomer', phone: '0542773752', createdAt: Date.now()},
+  {id: uuid(), name: 'Abenaa Costomer', phone: '0556696287', createdAt: Date.now()},
+  {id: uuid(), name: 'Abenaa Near Cocoa Seller', phone: '0599664859', createdAt: Date.now()},
+  {id: uuid(), name: 'Abene Near Cocoa House', phone: '0539799621', createdAt: Date.now()},
+  {id: uuid(), name: 'Ado Yaa Costomer Adumasa', phone: '0553987580', createdAt: Date.now()},
+  {id: uuid(), name: 'Adum Costomer 2 Near Chuch. Madam Marcy', phone: '0542304600', createdAt: Date.now()},
+  {id: uuid(), name: 'Aduma 1 Water Customa', phone: '0532441008', createdAt: Date.now()},
+  {id: uuid(), name: 'Adumasa Costomer Son Or Daughter', phone: '0550376866', createdAt: Date.now()},
+  {id: uuid(), name: 'Adumasa St Sebatiaans SHS', phone: '0546009495', createdAt: Date.now()},
+  {id: uuid(), name: 'Adumasas Store AJua', phone: '0543809608', createdAt: Date.now()},
+  {id: uuid(), name: 'Advertising Mohaaba Print & Advertising', phone: '0244907853', createdAt: Date.now()},
+  {id: uuid(), name: 'Ageness Costormer Adumasa', phone: '0243012332', createdAt: Date.now()},
+  {id: uuid(), name: 'Agieness Adu Costomer', phone: '0549925435', createdAt: Date.now()},
+  {id: uuid(), name: 'Agya Poku Adumassa Costomer', phone: '0247273336', createdAt: Date.now()},
+  {id: uuid(), name: 'Akoss Costomer Sakora Pack', phone: '0599106598', createdAt: Date.now()},
+  {id: uuid(), name: 'Akoss Nearby Chairman Costomer Adumasa', phone: '0543638138', createdAt: Date.now()},
+  {id: uuid(), name: 'Akua Costomer Adumasa', phone: '0548007411', createdAt: Date.now()},
+  {id: uuid(), name: 'Akuaaa Costomer', phone: '0244223337', createdAt: Date.now()},
+  {id: uuid(), name: 'Alabimama Costomer Adumasa', phone: '0555005704', createdAt: Date.now()},
+  {id: uuid(), name: 'Alabu Mom', phone: '0558092493', createdAt: Date.now()},
+  {id: uuid(), name: 'Ama Nyamekye Costomer Adumasa', phone: '0538563938', createdAt: Date.now()},
+  {id: uuid(), name: 'Amaria ZONGO KOKO WU', phone: '0591995203', createdAt: Date.now()},
+  {id: uuid(), name: 'Ameyaw Fitter', phone: '0552341412', createdAt: Date.now()},
+  {id: uuid(), name: 'Amoanimaa Adumasa Costomer', phone: '0543203275', createdAt: Date.now()},
+  {id: uuid(), name: 'Antwen Adumasa Danile', phone: '0556920050', createdAt: Date.now()},
+  {id: uuid(), name: 'Arron Adumasa Capinter', phone: '0550025949', createdAt: Date.now()},
+  {id: uuid(), name: 'Asase Costomer Adumasa', phone: '0242737505', createdAt: Date.now()},
+  {id: uuid(), name: 'Ashantuaa Near Washbay Adumasa Costomer', phone: '0544647982', createdAt: Date.now()},
+  {id: uuid(), name: 'Atta Junction', phone: '0242514245', createdAt: Date.now()},
+  {id: uuid(), name: 'Aunti Afiayim Costomer Adumasa', phone: '0248545113', createdAt: Date.now()},
+  {id: uuid(), name: 'Aunti Gina Or Auntie Ama Adumasa Costomer', phone: '0541670221', createdAt: Date.now()},
+  {id: uuid(), name: 'Auntie Zienabu Costomer Adu', phone: '0537868014', createdAt: Date.now()},
+  {id: uuid(), name: 'Autie Boakyewaa Cement Seller', phone: '0246631564', createdAt: Date.now()},
+  {id: uuid(), name: 'Autie Zenabu Adumasa', phone: '0245291463', createdAt: Date.now()},
+  {id: uuid(), name: 'Awudu Pragia Aboabo', phone: '0549329546', createdAt: Date.now()},
+  {id: uuid(), name: 'Bedsheet Seller', phone: '0538630222', createdAt: Date.now()},
+  {id: uuid(), name: 'Bedsheet Seller Costomer Adumasa', phone: '0540508511', createdAt: Date.now()},
+  {id: uuid(), name: 'Bismark ADUMASA SHS TK', phone: '0241381297', createdAt: Date.now()},
+  {id: uuid(), name: 'Bra Joe Costomer Adumasa', phone: '0547876263', createdAt: Date.now()},
+  {id: uuid(), name: 'Campany Manager Akua Adumasa Costomer', phone: '0548415971', createdAt: Date.now()},
+  {id: uuid(), name: 'Chiness Shop For', phone: '0546644678', createdAt: Date.now()},
+  {id: uuid(), name: 'Costomer Adu', phone: '0208218284', createdAt: Date.now()},
+  {id: uuid(), name: 'Costomer Adumasa', phone: '0544799719', createdAt: Date.now()},
+  {id: uuid(), name: 'Costomer Adumasa By One Blow Sis Ama', phone: '0538956858', createdAt: Date.now()},
+  {id: uuid(), name: 'Costomer Adumasa Near Cement Seller', phone: '0245649372', createdAt: Date.now()},
+  {id: uuid(), name: 'Costomer Sister Peace Adumasa', phone: '0543266368', createdAt: Date.now()},
+  {id: uuid(), name: 'Diana Kena', phone: '0535781402', createdAt: Date.now()},
+  {id: uuid(), name: 'Don Berimah Adumasa School', phone: '0246759495', createdAt: Date.now()},
+  {id: uuid(), name: 'Dora Adumasa Costomer DA School', phone: '0246212979', createdAt: Date.now()},
+  {id: uuid(), name: 'Erik Machine Ower Bomfa', phone: '0248730828', createdAt: Date.now()},
+  {id: uuid(), name: 'Esther Adumasa Fish Saller Costomer', phone: '0240254288', createdAt: Date.now()},
+  {id: uuid(), name: 'Esther Frimpomaa Costomer Adumasa', phone: '0245508116', createdAt: Date.now()},
+  {id: uuid(), name: 'Felisher Kisiwaa Truck House', phone: '0534540771', createdAt: Date.now()},
+  {id: uuid(), name: 'Flowrence Adumasa GUTHOUSE COSTOMER', phone: '0545298271', createdAt: Date.now()},
+  {id: uuid(), name: 'Gam Abrafi Magnet Costomer Adumasa', phone: '0543970330', createdAt: Date.now()},
+  {id: uuid(), name: 'Helper To Get Costomers', phone: '0552312468', createdAt: Date.now()},
+  {id: uuid(), name: 'Jenet Kro Dadamu Costomer', phone: '0256245196', createdAt: Date.now()},
+  {id: uuid(), name: 'JO O J Adumasa Costomer', phone: '0544799750', createdAt: Date.now()},
+  {id: uuid(), name: 'Killer Adumasa', phone: '0547275325', createdAt: Date.now()},
+  {id: uuid(), name: 'Kofi Ahiene Costomer Adumasa', phone: '0544793900', createdAt: Date.now()},
+  {id: uuid(), name: 'Kofi Coworker Adumasa', phone: '0551086492', createdAt: Date.now()},
+  {id: uuid(), name: 'Kofi Ne Ama Cement Seller Shop', phone: '0558378909', createdAt: Date.now()},
+  {id: uuid(), name: 'Konogo Odumase SHS', phone: '0202475741', createdAt: Date.now()},
+  {id: uuid(), name: 'Kwabi Conet To Land', phone: '0554033353', createdAt: Date.now()},
+  {id: uuid(), name: 'Kwame Thomas', phone: '0543429983', createdAt: Date.now()},
+  {id: uuid(), name: 'Lady Nearby Sakora Pack', phone: '0249130083', createdAt: Date.now()},
+  {id: uuid(), name: 'Maa Abrafie Daughter Costomer Afia', phone: '0553020047', createdAt: Date.now()},
+  {id: uuid(), name: 'Maa DORIS ADUMASA Costomer', phone: '0551278020', createdAt: Date.now()},
+  {id: uuid(), name: 'Maa Salina Costomer Adumasa', phone: '0530928835', createdAt: Date.now()},
+  {id: uuid(), name: 'Maa Tawia Adumasa Nearby Costomer', phone: '0553022144', createdAt: Date.now()},
+  {id: uuid(), name: 'Maakua Owiye', phone: '0543892494', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Abena Adumasa Costomer', phone: '0541471622', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Abena Fowaa', phone: '0248627861', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Abrafie Adumasa Costomer', phone: '0246285624', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Achiamaa Adumasa Market', phone: '0555005830', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Ama Frimpomaa', phone: '0597523327', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Danna MA Pack Adumasa', phone: '0597592018', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Doris Adumasa Costomar', phone: '0532388305', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Ellah Adumasa Costomer', phone: '0552184202', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Esther Costomer', phone: '0542714555', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Genet', phone: '0596413575', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Jenet Adumasa Costomer', phone: '0534643453', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Joyce Adumasa Costomer', phone: '0592807811', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Kety Adumasa Costomer', phone: '0555691156', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Linder Adumasa Costomer', phone: '0549045509', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Olivia Costomer Adumasa', phone: '0555589677', createdAt: Date.now()},
+  {id: uuid(), name: 'Madam Ross Adumasa Costomer', phone: '0243243183', createdAt: Date.now()},
+  {id: uuid(), name: 'Magazine Puler', phone: '0246481365', createdAt: Date.now()},
+  {id: uuid(), name: 'Mallam Sulley Adumasa', phone: '0245992317', createdAt: Date.now()},
+  {id: uuid(), name: 'Mame Kunadu Adumasa Costomer', phone: '0536810809', createdAt: Date.now()},
+  {id: uuid(), name: 'Mame Naba House Costomer Adumasa', phone: '0599140144', createdAt: Date.now()},
+  {id: uuid(), name: 'Mary Kenner Costomer', phone: '0549404560', createdAt: Date.now()},
+  {id: uuid(), name: 'Master Alidu Bonfa Junction', phone: '0547833051', createdAt: Date.now()},
+  {id: uuid(), name: 'Matter Costomer Adumasa', phone: '0533583968', createdAt: Date.now()},
+  {id: uuid(), name: 'Matter DA School Adumasa', phone: '0545832643', createdAt: Date.now()},
+  {id: uuid(), name: 'Mebel Sofo Mama Ba Adumasa Costomer', phone: '0553933974', createdAt: Date.now()},
+  {id: uuid(), name: 'Miness Junction Adumasa Costomer Lizbath', phone: '0595937937', createdAt: Date.now()},
+  {id: uuid(), name: 'Mo Mary Adumasa Costomer', phone: '0257228573', createdAt: Date.now()},
+  {id: uuid(), name: 'Mohaaba Print & Advertising', phone: '0242645533', createdAt: Date.now()},
+  {id: uuid(), name: 'Mr AHIEN Adumasa', phone: '0245809587', createdAt: Date.now()},
+  {id: uuid(), name: 'Mr Antwen Adumas Shop Or Continer', phone: '0545586578', createdAt: Date.now()},
+  {id: uuid(), name: 'Mr BOATENG Land C', phone: '0596818173', createdAt: Date.now()},
+  {id: uuid(), name: 'Mr Geoge Metodis Chuch Adumasa Costomer', phone: '0548809611', createdAt: Date.now()},
+  {id: uuid(), name: 'Nana Adumasa Costomer Shop Roadside', phone: '0599687877', createdAt: Date.now()},
+  {id: uuid(), name: 'Nana ahenema', phone: '0266535566', createdAt: Date.now()},
+  {id: uuid(), name: 'Nana Ama Adumasa Costomer', phone: '0248231640', createdAt: Date.now()},
+  {id: uuid(), name: 'Nana Juanction Adumasa', phone: '0242302009', createdAt: Date.now()},
+  {id: uuid(), name: 'Nana Nearby Shop', phone: '0547428625', createdAt: Date.now()},
+  {id: uuid(), name: 'Nikanika Adumasa Chicken Food Supply', phone: '0533653135', createdAt: Date.now()},
+  {id: uuid(), name: 'Nuhu Fitter', phone: '0247767180', createdAt: Date.now()},
+  {id: uuid(), name: 'Nyamekye Adumasa Work Needed', phone: '0533197293', createdAt: Date.now()},
+  {id: uuid(), name: 'Odo Yaa Mum', phone: '0532807382', createdAt: Date.now()},
+  {id: uuid(), name: 'Okocha', phone: '0247673272', createdAt: Date.now()},
+  {id: uuid(), name: 'Papi Kwajo Family', phone: '0540833268', createdAt: Date.now()},
+  {id: uuid(), name: 'Paul Kwabena St Catholic Basic Shool', phone: '0247702039', createdAt: Date.now()},
+  {id: uuid(), name: 'Peace Shop Adumasa', phone: '0534513833', createdAt: Date.now()},
+  {id: uuid(), name: 'Peminase Clasmate Nana Yaw', phone: '0541505265', createdAt: Date.now()},
+  {id: uuid(), name: 'Polegye Saller Kenner Adumasa', phone: '0546903332', createdAt: Date.now()},
+  {id: uuid(), name: 'R GEE', phone: '0245831453', createdAt: Date.now()},
+  {id: uuid(), name: 'Regina Kumawu', phone: '0247093744', createdAt: Date.now()},
+  {id: uuid(), name: 'Salam Pasport', phone: '0260897218', createdAt: Date.now()},
+  {id: uuid(), name: 'Sarmiyer', phone: '0244663132', createdAt: Date.now()},
+  {id: uuid(), name: 'Secondry School Adumasa Costomer', phone: '0544934733', createdAt: Date.now()},
+  {id: uuid(), name: 'Sister Adwoa Boatiemaa', phone: '0552873991', createdAt: Date.now()},
+  {id: uuid(), name: 'Sister Akoss Marcy Adumasa Costomer', phone: '0531187958', createdAt: Date.now()},
+  {id: uuid(), name: 'Sister Akoss Store Adumasa Costomer', phone: '0542275149', createdAt: Date.now()},
+  {id: uuid(), name: 'Sister Karima', phone: '0232297679', createdAt: Date.now()},
+  {id: uuid(), name: 'Sister Vero Costomer Adumasa', phone: '0548205871', createdAt: Date.now()},
+  {id: uuid(), name: 'Sofomaame', phone: '0247001394', createdAt: Date.now()},
+  {id: uuid(), name: 'St Mary\'s Girls Senior High School', phone: '0244875214', createdAt: Date.now()},
+  {id: uuid(), name: 'St Sevastian Edwade', phone: '0246963716', createdAt: Date.now()},
+  {id: uuid(), name: 'Velo Eikom Adumasa', phone: '0546340153', createdAt: Date.now()},
+  {id: uuid(), name: 'Yaw Show', phone: '0594378804', createdAt: Date.now()}
+  ];
+
+  const data = DB.load();
+  data.customers = defaults;
+  DB.save(data);
+}
+
+// ===========================
 // INIT
 // ===========================
 document.addEventListener('DOMContentLoaded', () => {
@@ -1000,6 +1149,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   document.getElementById('header-day').textContent = now.toLocaleDateString('en-GH', { weekday: 'long' });
   document.getElementById('header-date').textContent = now.toLocaleDateString('en-GH', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  // Seed default customers from contacts
+  seedCustomers();
 
   // Register SW
   registerSW();
