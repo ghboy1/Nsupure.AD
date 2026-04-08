@@ -2,23 +2,299 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#0a1628">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a84ff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="NSUPURE">
-  <meta name="description" content="NSUPURE Water Production & Sales Manager">
-  <title>NSUPURE Manager</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <title>NSUPURE Water Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue:      #0a84ff;
+      --blue-dim:  rgba(10,132,255,0.15);
+      --cyan:      #00e5ff;
+      --green:     #30d158;
+      --orange:    #ff9f0a;
+      --red:       #ff453a;
+      --bg:        #060e1c;
+      --surface:   #0d1a2d;
+      --surface2:  #112238;
+      --border:    rgba(10,132,255,0.18);
+      --text:      #e8f4ff;
+      --muted:     #5d82a8;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 72px;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .45;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(6,14,28,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-brand {
+      font-family: var(--font-head);
+      font-size: 22px; font-weight: 800;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .header-date {
+      font-family: var(--font-mono);
+      font-size: 11px; color: var(--muted);
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; animation: fadeUp .25s ease; }
+    .page.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px; padding: 16px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 18px 16px;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::after {
+      content: attr(data-icon);
+      position: absolute; right: 10px; bottom: 6px;
+      font-size: 38px; opacity: .08; pointer-events: none;
+    }
+    .stat-label {
+      font-size: 11px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 30px; font-weight: 800; line-height: 1;
+    }
+    .stat-value.blue   { color: var(--blue); }
+    .stat-value.green  { color: var(--green); }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.red    { color: var(--red); }
+
+    /* ── SECTION ── */
+    .section { padding: 4px 16px 16px; }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 18px; font-weight: 700;
+      margin-bottom: 14px; margin-top: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: block; width: 100%;
+      padding: 15px 20px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 14px;
+      font-family: var(--font-body);
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      margin-top: 10px;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn.green  { background: var(--green); }
+    .btn.orange { background: var(--orange); }
+    .btn.red    { background: var(--red); }
+    .btn.ghost  { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-sm {
+      display: inline-block; width: auto; margin: 0;
+      padding: 6px 14px; font-size: 12px; border-radius: 10px;
+    }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
+    .form-input, .form-select {
+      width: 100%; padding: 13px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text);
+      font-family: var(--font-body); font-size: 15px;
+      transition: border-color .2s;
+    }
+    .form-input:focus, .form-select:focus {
+      outline: none; border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-dim);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-select option { background: var(--surface); }
+
+    /* ── CARD ── */
+    .card-list { display: flex; flex-direction: column; gap: 10px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: rgba(10,132,255,0.35); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-title { font-size: 16px; font-weight: 600; }
+    .card-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    /* ── BADGE ── */
+    .badge {
+      padding: 4px 10px; border-radius: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .badge.green  { background: rgba(48,209,88,.15);  color: var(--green); }
+    .badge.orange { background: rgba(255,159,10,.15); color: var(--orange); }
+    .badge.red    { background: rgba(255,69,58,.15);  color: var(--red); }
+
+    /* ── STARS ── */
+    .stars { display: inline-flex; gap: 1px; margin-left: 6px; }
+    .star     { color: #ffd60a; font-size: 12px; }
+    .star-off { color: #2a3a50; font-size: 12px; }
+
+    /* ── PROGRESS ── */
+    .progress-wrap { margin-top: 10px; }
+    .progress-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .progress-bar { height: 6px; background: rgba(255,255,255,.07); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--blue), var(--cyan)); transition: width .4s; }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(6,14,28,0.9);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around;
+      padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none;
+      color: var(--muted); font-size: 10px; font-weight: 600;
+      letter-spacing: .04em; text-transform: uppercase;
+      cursor: pointer; padding: 6px 12px;
+      border-radius: 12px; transition: all .2s;
+    }
+    .nav-btn.active { color: var(--blue); }
+    .nav-btn .nav-icon { font-size: 22px; }
+
+    /* ── MODAL ── */
+    .modal {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
+      padding: 20px; align-items: flex-end; justify-content: center;
+    }
+    .modal.active { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px; padding: 28px 24px;
+      width: 100%; max-width: 500px;
+      max-height: 92vh; overflow-y: auto;
+      animation: slideUp .28s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .modal-title {
+      font-family: var(--font-head);
+      font-size: 22px; font-weight: 800;
+      margin-bottom: 22px; text-align: center;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; top: 20px; left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 13px 22px;
+      z-index: 400; font-size: 14px; font-weight: 500;
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── ALERT ── */
+    .alert {
+      background: rgba(255,69,58,.08);
+      border: 1px solid rgba(255,69,58,.3);
+      border-radius: 12px; padding: 12px 14px;
+      color: var(--red); font-size: 13px;
+      margin: 10px 0; display: none;
+    }
+    .alert.show { display: block; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
+    .empty-icon { font-size: 56px; opacity: .25; margin-bottom: 12px; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+    /* ── TOTAL ROW ── */
+    .total-row {
+      background: var(--blue-dim);
+      border: 1px solid rgba(10,132,255,.3);
+      border-radius: 12px; padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 20px; color: var(--blue);
+      text-align: center; margin: 12px 0;
+      font-weight: 500;
+    }
+
+    /* ── TIER BADGE ── */
+    .tier-icon { font-size: 42px; }
+    .tier-name { font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+
+    /* ── SUMMARY ROW ── */
+    .info-row { display: flex; justify-content: space-between; margin: 4px 0; font-size: 13px; }
+    .info-row span:last-child { color: var(--text); font-weight: 600; }
+
+    /* ── EXPORT BTN ── */
+    .export-bar { padding: 0 16px 16px; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
 </head>
 <body>
 
+<<<<<<< HEAD
 <!-- INSTALL BANNER -->
 <div id="install-banner" style="display:none;position:fixed;bottom:80px;left:12px;right:12px;z-index:900;
   background:linear-gradient(135deg,#0d2447,#1565C0);
@@ -41,25 +317,78 @@
     <button onclick="dismissInstall()" style="flex:1;background:rgba(255,255,255,0.08);
       color:rgba(144,202,249,0.8);border:1px solid rgba(144,202,249,0.2);
       border-radius:12px;padding:12px;font-size:14px;cursor:pointer;">Not now</button>
+=======
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">💧 NSUPURE</div>
+  <div class="header-date" id="header-date"></div>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="stats-grid">
+    <div class="stat-card" data-icon="📦">
+      <div class="stat-label">In Stock</div>
+      <div class="stat-value blue" id="stat-stock">0</div>
+    </div>
+    <div class="stat-card" data-icon="🚚">
+      <div class="stat-label">Loaded</div>
+      <div class="stat-value green" id="stat-loaded">0</div>
+    </div>
+    <div class="stat-card" data-icon="💰">
+      <div class="stat-label">Revenue</div>
+      <div class="stat-value green" id="stat-revenue">0</div>
+    </div>
+    <div class="stat-card" data-icon="⏳">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value orange" id="stat-pending">0</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      🏆 Top Customers
+      <button class="btn btn-sm" onclick="nav('customers')">View All</button>
+    </div>
+    <div id="top-customers-list" class="card-list"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📦 Recent Orders</div>
+    <div id="recent-orders-list" class="card-list"></div>
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
   </div>
 </div>
 
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
-
-<!-- HEADER -->
-<header class="header">
-  <div class="header-logo">
-    <img src="icon.svg" alt="NSUPURE">
-    <div class="header-title">NSUPURE</div>
+<!-- ══════════════ PRODUCTION ══════════════ -->
+<div class="page" id="page-production">
+  <div class="section">
+    <div class="section-title">🏭 Production</div>
+    <button class="btn green" onclick="openModal('modal-prod')">+ Record Production</button>
+    <div id="production-list" class="card-list" style="margin-top:16px;"></div>
   </div>
+<<<<<<< HEAD
   <div class="header-date">
     <div class="day" id="header-day">Loading...</div>
     <div id="header-date">---</div>
     <div id="header-stock" style="font-size:11px;color:var(--cyan);font-weight:600;margin-top:1px;"></div>
-  </div>
-</header>
+=======
+</div>
 
+<!-- ══════════════ LOADING ══════════════ -->
+<div class="page" id="page-loading">
+  <div class="section">
+    <div class="section-title">🚚 Loading</div>
+    <button class="btn green" onclick="openModal('modal-load')">+ Record Loading</button>
+    <div id="loading-list" class="card-list" style="margin-top:16px;"></div>
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
+  </div>
+</div>
+
+<<<<<<< HEAD
 <!-- MAIN CONTENT -->
 <main class="main">
   <section id="sec-dashboard"  class="section active"><div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div></section>
@@ -85,29 +414,80 @@
 <div id="modal-prod" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div>
+=======
+<!-- ══════════════ ORDERS ══════════════ -->
+<div class="page" id="page-orders">
+  <div class="section">
+    <div class="section-title">📦 Orders</div>
+    <button class="btn green" onclick="openModal('modal-order')">+ Place Order</button>
+    <div class="form-group" style="margin-top:14px;">
+      <select class="form-select" id="order-filter" onchange="renderOrders()">
+        <option value="all">All Orders</option>
+        <option value="pending">Pending Only</option>
+        <option value="completed">Completed Only</option>
+      </select>
+    </div>
+    <div id="orders-list" class="card-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════ CUSTOMERS ══════════════ -->
+<div class="page" id="page-customers">
+  <div class="section">
+    <div class="section-title">👥 Customer Rewards</div>
+    <div id="customers-list" class="card-list"></div>
+  </div>
+  <div class="export-bar">
+    <button class="btn ghost" onclick="exportCSV()">📤 Export Customer Data (CSV)</button>
+  </div>
+</div>
+
+<!-- ══════════════ REPORTS ══════════════ -->
+<div class="page" id="page-reports">
+  <div class="section">
+    <div class="section-title">📊 Reports</div>
+    <div id="reports-content"></div>
+  </div>
+  <div class="export-bar">
+    <button class="btn ghost" onclick="exportAllCSV()">📤 Export All Data (CSV)</button>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL: PRODUCTION ══════════════ -->
+<div class="modal" id="modal-prod">
+  <div class="modal-box">
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     <div class="modal-title">🏭 Record Production</div>
     <div class="form-group">
-      <label class="form-label">Date *</label>
-      <input type="date" class="form-input" id="p-date">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-input" id="prod-date">
     </div>
     <div class="form-row">
       <div class="form-group">
+<<<<<<< HEAD
         <label class="form-label">Roll Number *</label>
         <select class="form-select" id="p-roll">
           <option value="">Select Roll</option>
           <option value="1">Roll 1</option><option value="2">Roll 2</option>
           <option value="3">Roll 3</option><option value="4">Roll 4</option><option value="5">Roll 5</option>
+=======
+        <label class="form-label">Roll #</label>
+        <select class="form-select" id="prod-roll">
+          <option>1</option><option>2</option><option>3</option>
+          <option>4</option><option>5</option>
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Bags Produced *</label>
-        <input type="number" class="form-input" id="p-bags" placeholder="e.g. 2000" min="1">
+        <label class="form-label">Bags Produced</label>
+        <input type="number" class="form-input" id="prod-bags" min="1" placeholder="0">
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Notes (optional)</label>
-      <input type="text" class="form-input" id="p-notes" placeholder="Any remarks...">
+      <input type="text" class="form-input" id="prod-notes" placeholder="e.g. Machine issue">
     </div>
+<<<<<<< HEAD
     <button class="btn btn-primary" onclick="submitProduction()">✅ Save Production</button>
     <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-prod')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
   </div>
@@ -117,29 +497,40 @@
 <div id="modal-load" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div>
+=======
+    <button class="btn green" onclick="saveProd()">Save Production</button>
+    <button class="btn ghost" onclick="closeModal('modal-prod')">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL: LOADING ══════════════ -->
+<div class="modal" id="modal-load">
+  <div class="modal-box">
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     <div class="modal-title">🚚 Record Loading</div>
     <div class="form-group">
-      <label class="form-label">Date *</label>
-      <input type="date" class="form-input" id="l-date">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-input" id="load-date">
     </div>
     <div class="form-group">
-      <label class="form-label">Vehicle / Person Name *</label>
-      <input type="text" class="form-input" id="l-vehicle" placeholder="e.g. Truck 1 / Kofi Aboboyaa">
+      <label class="form-label">Vehicle / Driver</label>
+      <input type="text" class="form-input" id="load-vehicle" placeholder="e.g. GR-1234-20 / Kofi">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Bags Loaded *</label>
-        <input type="number" class="form-input" id="l-bags" placeholder="e.g. 500" min="1">
+        <label class="form-label">Bags Loaded</label>
+        <input type="number" class="form-input" id="load-bags" min="1" placeholder="0">
       </div>
       <div class="form-group">
         <label class="form-label">Destination</label>
-        <input type="text" class="form-input" id="l-dest" placeholder="e.g. Kumasi">
+        <input type="text" class="form-input" id="load-dest" placeholder="Kumasi Central">
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Notes (optional)</label>
-      <input type="text" class="form-input" id="l-notes" placeholder="Any remarks...">
+      <input type="text" class="form-input" id="load-notes">
     </div>
+<<<<<<< HEAD
     <button class="btn btn-primary" onclick="submitLoading()">✅ Save Loading</button>
     <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-load')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
   </div>
@@ -191,30 +582,51 @@
 
       <!-- Dropdown list -->
       <div id="cust-dropdown" class="cust-dd"></div>
+=======
+    <button class="btn green" onclick="saveLoad()">Save Loading</button>
+    <button class="btn ghost" onclick="closeModal('modal-load')">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL: ORDER ══════════════ -->
+<div class="modal" id="modal-order">
+  <div class="modal-box">
+    <div class="modal-title">📦 Place Order</div>
+    <div class="form-group">
+      <label class="form-label">Customer Name</label>
+      <input type="text" class="form-input" id="order-customer" placeholder="Full name">
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     </div>
 
     <div class="form-group">
-      <label class="form-label">Order Date *</label>
-      <input type="date" class="form-input" id="o-date">
+      <label class="form-label">Phone (optional)</label>
+      <input type="tel" class="form-input" id="order-phone" placeholder="0244XXXXXX">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-input" id="order-date">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Bags Ordered *</label>
-        <input type="number" class="form-input" id="o-bags" placeholder="e.g. 100" min="1">
+        <label class="form-label">Bags</label>
+        <input type="number" class="form-input" id="order-bags" min="1" placeholder="0" oninput="calcOrderTotal()">
       </div>
       <div class="form-group">
         <label class="form-label">Price / Bag (GH₵)</label>
-        <input type="number" class="form-input" id="o-price" placeholder="0.00" step="0.01" min="0">
+        <input type="number" class="form-input" id="order-price" value="5" step="0.1" oninput="calcOrderTotal()">
       </div>
     </div>
+    <div class="total-row" id="order-total-row">GH₵ 0.00</div>
     <div class="form-group">
       <label class="form-label">Amount Paid (GH₵)</label>
-      <input type="number" class="form-input" id="o-paid" placeholder="0.00" step="0.01" min="0">
+      <input type="number" class="form-input" id="order-paid" step="0.1" value="0" placeholder="0.00" oninput="calcOrderTotal()">
     </div>
+    <div id="order-balance-row" style="font-size:13px;color:var(--orange);margin-bottom:10px;"></div>
     <div class="form-group">
-      <label class="form-label">Notes</label>
-      <input type="text" class="form-input" id="o-notes" placeholder="Delivery instructions, etc...">
+      <label class="form-label">Notes (optional)</label>
+      <input type="text" class="form-input" id="order-notes">
     </div>
+<<<<<<< HEAD
     <button class="btn btn-primary" onclick="submitOrder()">✅ Place Order</button>
     <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-order')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
   </div>
@@ -225,10 +637,24 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">💸 Add Debtor / Credit</div>
+=======
+    <div class="alert" id="stock-alert"></div>
+    <button class="btn green" onclick="saveOrder()">Place Order</button>
+    <button class="btn ghost" onclick="closeModal('modal-order')">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL: PAY BALANCE ══════════════ -->
+<div class="modal" id="modal-pay">
+  <div class="modal-box">
+    <div class="modal-title">💳 Record Payment</div>
+    <div id="pay-details" style="margin-bottom:16px;font-size:14px;color:var(--muted);line-height:1.8;"></div>
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     <div class="form-group">
-      <label class="form-label">Name *</label>
-      <input type="text" class="form-input" id="d-name" placeholder="Person or business name">
+      <label class="form-label">Amount Received (GH₵)</label>
+      <input type="number" class="form-input" id="pay-amount" step="0.1" placeholder="0.00">
     </div>
+<<<<<<< HEAD
     <div class="form-group">
       <label class="form-label">Phone Number</label>
       <input type="tel" class="form-input" id="d-phone" placeholder="e.g. 0244000000">
@@ -258,11 +684,37 @@
     </div>
     <button class="btn btn-primary" onclick="submitDebtor()">✅ Save Record</button>
     <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-debtor')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
+=======
+    <button class="btn green" onclick="submitPayment()">Record Payment</button>
+    <button class="btn ghost" onclick="closeModal('modal-pay')">Cancel</button>
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
   </div>
 </div>
 
-<script src="app.js"></script>
+<!-- ══════════════ BOTTOM NAV ══════════════ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-page="dashboard" onclick="nav('dashboard',this)">
+    <div class="nav-icon">🏠</div>Home
+  </button>
+  <button class="nav-btn" data-page="production" onclick="nav('production',this)">
+    <div class="nav-icon">🏭</div>Produce
+  </button>
+  <button class="nav-btn" data-page="loading" onclick="nav('loading',this)">
+    <div class="nav-icon">🚚</div>Load
+  </button>
+  <button class="nav-btn" data-page="orders" onclick="nav('orders',this)">
+    <div class="nav-icon">📦</div>Orders
+  </button>
+  <button class="nav-btn" data-page="customers" onclick="nav('customers',this)">
+    <div class="nav-icon">👥</div>Customers
+  </button>
+  <button class="nav-btn" data-page="reports" onclick="nav('reports',this)">
+    <div class="nav-icon">📊</div>Reports
+  </button>
+</nav>
+
 <script>
+<<<<<<< HEAD
 // ===== PWA INSTALL PROMPT =====
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -279,8 +731,216 @@ function installApp() {
         document.getElementById('install-banner').style.display='none';
       }
       deferredPrompt=null;
+=======
+// ══════════════════════════════════════════
+//  DATABASE
+// ══════════════════════════════════════════
+const DB = {
+  production: [],
+  loading:    [],
+  orders:     [],
+  customers:  {},
+
+  load() {
+    try {
+      this.production = JSON.parse(localStorage.getItem('ns-prod') || '[]');
+      this.loading    = JSON.parse(localStorage.getItem('ns-load') || '[]');
+      this.orders     = JSON.parse(localStorage.getItem('ns-orders') || '[]');
+      this.customers  = JSON.parse(localStorage.getItem('ns-customers') || '{}');
+    } catch(e) { console.error(e); }
+  },
+
+  save() {
+    try {
+      localStorage.setItem('ns-prod',      JSON.stringify(this.production));
+      localStorage.setItem('ns-load',      JSON.stringify(this.loading));
+      localStorage.setItem('ns-orders',    JSON.stringify(this.orders));
+      localStorage.setItem('ns-customers', JSON.stringify(this.customers));
+    } catch(e) { console.error(e); }
+  },
+
+  inventory() {
+    const produced = this.production.reduce((s,p) => s + (p.bags||0), 0);
+    const loaded   = this.loading.reduce((s,l)    => s + (l.bags||0), 0);
+    const inOrders = this.orders.reduce((s,o)     => s + (o.bags||0), 0);
+    return { produced, loaded, inOrders, inStock: produced - loaded - inOrders };
+  },
+
+  stats() {
+    const inv      = this.inventory();
+    const revenue  = this.orders.reduce((s,o) => s + (o.bags * o.price)||0, 0);
+    const paid     = this.orders.reduce((s,o) => s + (o.amountPaid||0), 0);
+    const balance  = revenue - paid;
+    const pending  = this.orders.filter(o => o.status === 'pending').length;
+    return { stock: inv.inStock, loaded: inv.loaded, revenue, paid, balance, pending };
+  },
+
+  rebuildCustomers() {
+    this.customers = {};
+    this.orders.forEach(o => {
+      if (!o.customer) return;
+      const k = o.customer.trim().toLowerCase();
+      if (!this.customers[k]) {
+        this.customers[k] = {
+          id: k, name: o.customer.trim(),
+          phone: o.phone || '',
+          totalBags: 0, totalSpent: 0, totalPaid: 0, orderCount: 0
+        };
+      }
+      const c = this.customers[k];
+      c.totalBags  += o.bags;
+      c.totalSpent += o.bags * o.price;
+      c.totalPaid  += o.amountPaid || 0;
+      c.orderCount += 1;
+      c.phone = c.phone || o.phone || '';
+      c.stars = calcStars(c.totalBags);
+      c.tier  = getTier(c.totalBags);
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     });
+    this.save();
+  }
+};
+
+// ══════════════════════════════════════════
+//  TIERS & STARS
+// ══════════════════════════════════════════
+function calcStars(bags) {
+  if (bags >= 500) return 5;
+  if (bags >= 300) return 4;
+  if (bags >= 150) return 3;
+  if (bags >= 75)  return 2;
+  if (bags >= 30)  return 1;
+  return 0;
+}
+function getTier(bags) {
+  if (bags >= 500) return { name:'Diamond',  color:'#00e5ff', icon:'💎' };
+  if (bags >= 300) return { name:'Platinum', color:'#b39ddb', icon:'🏆' };
+  if (bags >= 150) return { name:'Gold',     color:'#ffd60a', icon:'⭐' };
+  if (bags >= 75)  return { name:'Silver',   color:'#c0c0c0', icon:'🥈' };
+  if (bags >= 30)  return { name:'Bronze',   color:'#cd7f32', icon:'🥉' };
+  return { name:'Starter', color:'#5d82a8', icon:'🌊' };
+}
+function nextTierInfo(bags) {
+  const steps = [
+    { th:30,  name:'Bronze' },
+    { th:75,  name:'Silver' },
+    { th:150, name:'Gold' },
+    { th:300, name:'Platinum' },
+    { th:500, name:'Diamond' }
+  ];
+  const idx  = steps.findIndex(s => bags < s.th);
+  if (idx < 0) return null;
+  const prev = idx > 0 ? steps[idx-1].th : 0;
+  const next = steps[idx];
+  const pct  = Math.round(((bags - prev) / (next.th - prev)) * 100);
+  return { name: next.name, needed: next.th - bags, pct };
+}
+function renderStars(n) {
+  let s = '<span class="stars">';
+  for (let i=0; i<5; i++) s += `<span class="${i<n?'star':'star-off'}">★</span>`;
+  return s + '</span>';
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function nav(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const b = document.querySelector(`.nav-btn[data-page="${page}"]`);
+    if (b) b.classList.add('active');
+  }
+  window.scrollTo(0,0);
+  if (page === 'reports') renderReports();
+}
+
+// ══════════════════════════════════════════
+//  MODALS
+// ══════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+});
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════
+//  SAVE: PRODUCTION
+// ══════════════════════════════════════════
+function saveProd() {
+  const bags = parseInt(document.getElementById('prod-bags').value);
+  const roll = document.getElementById('prod-roll').value;
+  const date = document.getElementById('prod-date').value;
+  const notes= document.getElementById('prod-notes').value.trim();
+  if (!bags || bags < 1) { toast('⚠️ Enter bags produced'); return; }
+  DB.production.push({ id: Date.now(), date, roll, bags, notes });
+  DB.save();
+  closeModal('modal-prod');
+  toast(`✅ ${bags} bags produced on Roll ${roll}`);
+  document.getElementById('prod-bags').value = '';
+  document.getElementById('prod-notes').value = '';
+  refresh();
+}
+
+// ══════════════════════════════════════════
+//  SAVE: LOADING
+// ══════════════════════════════════════════
+function saveLoad() {
+  const bags    = parseInt(document.getElementById('load-bags').value);
+  const vehicle = document.getElementById('load-vehicle').value.trim();
+  const date    = document.getElementById('load-date').value;
+  const dest    = document.getElementById('load-dest').value.trim();
+  const notes   = document.getElementById('load-notes').value.trim();
+  if (!bags || bags < 1 || !vehicle) { toast('⚠️ Fill required fields'); return; }
+  const { inStock } = DB.inventory();
+  if (bags > inStock) { toast(`⚠️ Only ${inStock} bags in stock`); return; }
+  DB.loading.push({ id: Date.now(), date, vehicle, bags, destination: dest, notes });
+  DB.save();
+  closeModal('modal-load');
+  toast(`✅ ${bags} bags loaded to ${vehicle}`);
+  document.getElementById('load-bags').value = '';
+  document.getElementById('load-vehicle').value = '';
+  document.getElementById('load-dest').value = '';
+  document.getElementById('load-notes').value = '';
+  refresh();
+}
+
+// ══════════════════════════════════════════
+//  ORDER CALC
+// ══════════════════════════════════════════
+function calcOrderTotal() {
+  const bags  = parseInt(document.getElementById('order-bags').value) || 0;
+  const price = parseFloat(document.getElementById('order-price').value) || 0;
+  const paid  = parseFloat(document.getElementById('order-paid').value) || 0;
+  const total = bags * price;
+  const bal   = total - paid;
+  document.getElementById('order-total-row').textContent = `GH₵ ${total.toFixed(2)}`;
+  const balEl = document.getElementById('order-balance-row');
+  if (bal > 0) balEl.textContent = `⚠️ Balance: GH₵ ${bal.toFixed(2)}`;
+  else if (bal < 0) balEl.textContent = `✅ Overpayment: GH₵ ${Math.abs(bal).toFixed(2)}`;
+  else balEl.textContent = '';
+
+  const { inStock } = DB.inventory();
+  const al = document.getElementById('stock-alert');
+  if (bags > inStock) {
+    al.textContent = `⚠️ Only ${inStock} bags in stock – this order requires ${bags}`;
+    al.classList.add('show');
   } else {
+<<<<<<< HEAD
     alert('To install:\n\n📱 Android Chrome:\nTap the 3-dot menu (⋮) → "Add to Home screen"\n\n🍎 iPhone Safari:\nTap the Share button → "Add to Home Screen"');
   }
 }
@@ -343,5 +1003,336 @@ window.addEventListener('appinstalled', ()=>{
   background: rgba(255,82,82,0.1); border-color: rgba(255,82,82,0.3); color: var(--danger);
 }
 </style>
+=======
+    al.classList.remove('show');
+  }
+}
+
+// ══════════════════════════════════════════
+//  SAVE: ORDER
+// ══════════════════════════════════════════
+function saveOrder() {
+  const customer = document.getElementById('order-customer').value.trim();
+  const phone    = document.getElementById('order-phone').value.trim();
+  const bags     = parseInt(document.getElementById('order-bags').value);
+  const price    = parseFloat(document.getElementById('order-price').value);
+  const date     = document.getElementById('order-date').value;
+  const paid     = parseFloat(document.getElementById('order-paid').value) || 0;
+  const notes    = document.getElementById('order-notes').value.trim();
+  if (!customer || !bags || bags < 1 || !price) { toast('⚠️ Fill required fields'); return; }
+  const { inStock } = DB.inventory();
+  if (bags > inStock) {
+    if (!confirm(`Stock shortage! Only ${inStock} bags available. Continue anyway?`)) return;
+  }
+  const total  = bags * price;
+  const status = paid >= total ? 'completed' : 'pending';
+  DB.orders.push({ id: Date.now(), customer, phone, date, bags, price, amountPaid: paid, notes, status });
+  DB.rebuildCustomers();
+  closeModal('modal-order');
+  toast(`✅ Order placed for ${customer} — ${bags} bags`);
+  document.getElementById('order-customer').value = '';
+  document.getElementById('order-phone').value    = '';
+  document.getElementById('order-bags').value     = '';
+  document.getElementById('order-price').value    = '5';
+  document.getElementById('order-paid').value     = '0';
+  document.getElementById('order-notes').value    = '';
+  document.getElementById('order-total-row').textContent = 'GH₵ 0.00';
+  document.getElementById('order-balance-row').textContent = '';
+  document.getElementById('stock-alert').classList.remove('show');
+  refresh();
+}
+
+// ══════════════════════════════════════════
+//  COMPLETE ORDER / PAYMENT
+// ══════════════════════════════════════════
+let _payOrderId = null;
+function openPay(id) {
+  const o = DB.orders.find(x => x.id === id);
+  if (!o) return;
+  _payOrderId = id;
+  const bal = (o.bags * o.price) - o.amountPaid;
+  document.getElementById('pay-details').innerHTML =
+    `<b>${o.customer}</b><br>
+     Total: GH₵ ${(o.bags*o.price).toFixed(2)}<br>
+     Paid:  GH₵ ${o.amountPaid.toFixed(2)}<br>
+     <span style="color:var(--orange)">Balance: GH₵ ${bal.toFixed(2)}</span>`;
+  document.getElementById('pay-amount').value = bal.toFixed(2);
+  openModal('modal-pay');
+}
+function submitPayment() {
+  const o      = DB.orders.find(x => x.id === _payOrderId);
+  const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
+  if (!o || amount < 0) { toast('⚠️ Invalid amount'); return; }
+  o.amountPaid += amount;
+  const total = o.bags * o.price;
+  if (o.amountPaid >= total) o.status = 'completed';
+  DB.rebuildCustomers();
+  closeModal('modal-pay');
+  toast(`✅ GH₵ ${amount.toFixed(2)} recorded for ${o.customer}`);
+  refresh();
+}
+
+// ══════════════════════════════════════════
+//  DELETE
+// ══════════════════════════════════════════
+function delProd(id) {
+  if (!confirm('Delete this production record?')) return;
+  DB.production = DB.production.filter(p => p.id !== id);
+  DB.save(); toast('Deleted'); refresh();
+}
+function delLoad(id) {
+  if (!confirm('Delete this loading record?')) return;
+  DB.loading = DB.loading.filter(l => l.id !== id);
+  DB.save(); toast('Deleted'); refresh();
+}
+function delOrder(id) {
+  if (!confirm('Delete this order? Customer stats will update.')) return;
+  DB.orders = DB.orders.filter(o => o.id !== id);
+  DB.rebuildCustomers();
+  toast('Deleted'); refresh();
+}
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function refresh() {
+  renderDashboard();
+  renderProduction();
+  renderLoading();
+  renderOrders();
+  renderCustomers();
+}
+
+function renderDashboard() {
+  const s = DB.stats();
+  document.getElementById('stat-stock').textContent   = s.stock;
+  document.getElementById('stat-loaded').textContent  = s.loaded;
+  document.getElementById('stat-revenue').textContent = `GH₵${s.revenue.toFixed(2)}`;
+  document.getElementById('stat-pending').textContent = s.pending;
+
+  // top 3 customers
+  const top = Object.values(DB.customers).sort((a,b) => b.totalBags - a.totalBags).slice(0,3);
+  document.getElementById('top-customers-list').innerHTML = top.length
+    ? top.map(c => `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${c.name}${renderStars(c.stars)}</div>
+              <div class="card-sub">${c.totalBags} bags · GH₵${c.totalSpent.toFixed(2)}</div>
+            </div>
+            <div style="text-align:center">
+              <div class="tier-icon">${c.tier.icon}</div>
+              <div class="tier-name" style="color:${c.tier.color}">${c.tier.name}</div>
+            </div>
+          </div>
+        </div>`).join('')
+    : empty('👥','No customers yet');
+
+  // recent 3 orders
+  const recent = DB.orders.slice(-3).reverse();
+  document.getElementById('recent-orders-list').innerHTML = recent.length
+    ? recent.map(o => `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${o.customer}</div>
+              <div class="card-sub">${fmt(o.date)} · ${o.bags} bags · GH₵${(o.bags*o.price).toFixed(2)}</div>
+            </div>
+            <span class="badge ${o.status==='completed'?'green':'orange'}">${o.status}</span>
+          </div>
+        </div>`).join('')
+    : empty('📦','No orders yet');
+}
+
+function renderProduction() {
+  document.getElementById('production-list').innerHTML = DB.production.length
+    ? DB.production.slice().reverse().map(p => `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Roll ${p.roll} — <span style="color:var(--green)">${p.bags} bags</span></div>
+              <div class="card-sub">${fmt(p.date)}${p.notes ? ' · ' + p.notes : ''}</div>
+            </div>
+            <button class="btn btn-sm red" onclick="delProd(${p.id})">🗑</button>
+          </div>
+        </div>`).join('')
+    : empty('🏭','No production records');
+}
+
+function renderLoading() {
+  document.getElementById('loading-list').innerHTML = DB.loading.length
+    ? DB.loading.slice().reverse().map(l => `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${l.vehicle} — <span style="color:var(--blue)">${l.bags} bags</span></div>
+              <div class="card-sub">${fmt(l.date)}${l.destination ? ' → ' + l.destination : ''}${l.notes ? ' · ' + l.notes : ''}</div>
+            </div>
+            <button class="btn btn-sm red" onclick="delLoad(${l.id})">🗑</button>
+          </div>
+        </div>`).join('')
+    : empty('🚚','No loading records');
+}
+
+function renderOrders() {
+  const filter = document.getElementById('order-filter')?.value || 'all';
+  let list = DB.orders.slice().reverse();
+  if (filter === 'pending')   list = list.filter(o => o.status === 'pending');
+  if (filter === 'completed') list = list.filter(o => o.status === 'completed');
+  document.getElementById('orders-list').innerHTML = list.length
+    ? list.map(o => {
+        const total = o.bags * o.price;
+        const bal   = total - o.amountPaid;
+        return `
+          <div class="card">
+            <div class="card-header">
+              <div style="flex:1">
+                <div class="card-title">${o.customer}</div>
+                <div class="card-sub">${fmt(o.date)} · ${o.bags} bags @ GH₵${o.price}</div>
+                <div class="card-sub">Total: GH₵${total.toFixed(2)} · Paid: GH₵${o.amountPaid.toFixed(2)}</div>
+                ${bal > 0 ? `<div style="font-size:12px;color:var(--orange);margin-top:2px;">Balance: GH₵${bal.toFixed(2)}</div>` : ''}
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                <span class="badge ${o.status==='completed'?'green':'orange'}">${o.status}</span>
+                ${o.status === 'pending' ? `<button class="btn btn-sm green" onclick="openPay(${o.id})">Pay</button>` : ''}
+                <button class="btn btn-sm red" onclick="delOrder(${o.id})">🗑</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('')
+    : empty('📦','No orders found');
+}
+
+function renderCustomers() {
+  const list = Object.values(DB.customers).sort((a,b) => b.totalBags - a.totalBags);
+  document.getElementById('customers-list').innerHTML = list.length
+    ? list.map(c => {
+        const nt = nextTierInfo(c.totalBags);
+        const bal = c.totalSpent - c.totalPaid;
+        return `
+          <div class="card">
+            <div class="card-header">
+              <div style="flex:1">
+                <div class="card-title">${c.name}${renderStars(c.stars)}</div>
+                <div class="card-sub">${c.phone || 'No phone'}</div>
+                <div style="margin-top:8px">
+                  <div class="info-row"><span>Total Bags</span><span>${c.totalBags}</span></div>
+                  <div class="info-row"><span>Orders</span><span>${c.orderCount}</span></div>
+                  <div class="info-row"><span>Total Spent</span><span>GH₵${c.totalSpent.toFixed(2)}</span></div>
+                  ${bal > 0 ? `<div class="info-row"><span style="color:var(--orange)">Outstanding</span><span style="color:var(--orange)">GH₵${bal.toFixed(2)}</span></div>` : ''}
+                </div>
+              </div>
+              <div style="text-align:center;margin-left:12px">
+                <div class="tier-icon">${c.tier.icon}</div>
+                <div class="tier-name" style="color:${c.tier.color}">${c.tier.name}</div>
+              </div>
+            </div>
+            ${nt ? `
+              <div class="progress-wrap">
+                <div class="progress-label">Next: ${nt.name} — ${nt.needed} bags away</div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${nt.pct}%"></div></div>
+              </div>` : `<div style="margin-top:10px;text-align:center;font-size:13px;color:var(--cyan);font-weight:600;">💎 MAX LEVEL</div>`}
+          </div>`;
+      }).join('')
+    : empty('👥','No customers yet');
+}
+
+function renderReports() {
+  const s   = DB.stats();
+  const inv = DB.inventory();
+  const monthOrders = DB.orders.filter(o => {
+    const d = new Date(o.date);
+    const n = new Date();
+    return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+  });
+  const monthRev = monthOrders.reduce((s,o) => s + o.bags * o.price, 0);
+  const topCust  = Object.values(DB.customers).sort((a,b) => b.totalBags - a.totalBags)[0];
+
+  document.getElementById('reports-content').innerHTML = `
+    <div class="card" style="margin-bottom:12px">
+      <div class="section-title" style="margin-bottom:12px">📦 Inventory Summary</div>
+      <div class="info-row"><span>Total Produced</span><span>${inv.produced} bags</span></div>
+      <div class="info-row"><span>Total Loaded</span><span>${inv.loaded} bags</span></div>
+      <div class="info-row"><span>In Orders</span><span>${inv.inOrders} bags</span></div>
+      <div class="divider"></div>
+      <div class="info-row"><span style="color:var(--blue);font-weight:700">In Stock</span><span style="color:var(--blue);font-weight:700">${inv.inStock} bags</span></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="section-title" style="margin-bottom:12px">💰 Financial Summary</div>
+      <div class="info-row"><span>Total Revenue</span><span>GH₵${s.revenue.toFixed(2)}</span></div>
+      <div class="info-row"><span>Total Collected</span><span>GH₵${s.paid.toFixed(2)}</span></div>
+      <div class="info-row"><span style="color:var(--orange)">Outstanding</span><span style="color:var(--orange)">GH₵${s.balance.toFixed(2)}</span></div>
+      <div class="divider"></div>
+      <div class="info-row"><span>This Month Revenue</span><span>GH₵${monthRev.toFixed(2)}</span></div>
+      <div class="info-row"><span>This Month Orders</span><span>${monthOrders.length}</span></div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px">👥 Customer Summary</div>
+      <div class="info-row"><span>Total Customers</span><span>${Object.keys(DB.customers).length}</span></div>
+      <div class="info-row"><span>Total Orders</span><span>${DB.orders.length}</span></div>
+      ${topCust ? `<div class="info-row"><span>Top Customer</span><span>${topCust.name} (${topCust.totalBags} bags)</span></div>` : ''}
+      <div class="info-row"><span>Pending Orders</span><span>${s.pending}</span></div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════
+function exportCSV() {
+  const rows = [['Name','Phone','Bags','Orders','Spent (GH₵)','Paid (GH₵)','Outstanding (GH₵)','Tier']];
+  Object.values(DB.customers).sort((a,b)=>b.totalBags-a.totalBags).forEach(c => {
+    const bal = c.totalSpent - c.totalPaid;
+    rows.push([c.name, c.phone, c.totalBags, c.orderCount,
+      c.totalSpent.toFixed(2), c.totalPaid.toFixed(2), bal.toFixed(2), c.tier.name]);
+  });
+  dlCSV(rows, 'nsupure-customers.csv');
+}
+
+function exportAllCSV() {
+  const rows = [['Type','Date','Details','Bags','Price','Amount','Status']];
+  DB.production.forEach(p => rows.push(['Production', p.date, `Roll ${p.roll}`, p.bags,'','','']));
+  DB.loading.forEach(l => rows.push(['Loading', l.date, `${l.vehicle} → ${l.destination||''}`, l.bags,'','','']));
+  DB.orders.forEach(o => rows.push(['Order', o.date, o.customer, o.bags, o.price.toFixed(2), (o.bags*o.price).toFixed(2), o.status]));
+  dlCSV(rows, 'nsupure-all.csv');
+}
+
+function dlCSV(rows, filename) {
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a   = document.createElement('a');
+  a.href    = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download= filename; a.click();
+}
+
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function fmt(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+function empty(icon, msg) {
+  return `<div class="empty"><div class="empty-icon">${icon}</div><div>${msg}</div></div>`;
+}
+function today() { return new Date().toISOString().split('T')[0]; }
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+function init() {
+  DB.load();
+  document.getElementById('header-date').textContent =
+    new Date().toLocaleDateString('en-GB', {weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+  // Set default dates
+  ['prod-date','load-date','order-date'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = today();
+  });
+  refresh();
+}
+
+init();
+</script>
+>>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
 </body>
 </html>
