@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0a84ff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>NSUPURE Water Manager</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -294,30 +294,6 @@
 </head>
 <body>
 
-<<<<<<< HEAD
-<!-- INSTALL BANNER -->
-<div id="install-banner" style="display:none;position:fixed;bottom:80px;left:12px;right:12px;z-index:900;
-  background:linear-gradient(135deg,#0d2447,#1565C0);
-  border:1.5px solid rgba(66,165,245,0.4);border-radius:20px;padding:16px 16px 14px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.6);animation:slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-    <img src="icon.svg" style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.1);padding:4px;">
-    <div>
-      <div style="font-family:var(--font-main);font-size:17px;font-weight:700;letter-spacing:1px;
-        background:linear-gradient(90deg,#90CAF9,#00E5FF);-webkit-background-clip:text;
-        -webkit-text-fill-color:transparent;background-clip:text;">NSUPURE Manager</div>
-      <div style="font-size:12px;color:rgba(144,202,249,0.8);margin-top:2px;">Install for quick access — works offline!</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;">
-    <button onclick="installApp()" style="flex:2;background:linear-gradient(135deg,#42A5F5,#00B4D8);
-      color:white;border:none;border-radius:12px;padding:12px;
-      font-family:var(--font-main);font-size:15px;font-weight:700;letter-spacing:0.5px;
-      cursor:pointer;box-shadow:0 4px 15px rgba(0,180,216,0.4);">📲 Install App</button>
-    <button onclick="dismissInstall()" style="flex:1;background:rgba(255,255,255,0.08);
-      color:rgba(144,202,249,0.8);border:1px solid rgba(144,202,249,0.2);
-      border-radius:12px;padding:12px;font-size:14px;cursor:pointer;">Not now</button>
-=======
 <!-- HEADER -->
 <header class="header">
   <div class="header-brand">💧 NSUPURE</div>
@@ -359,7 +335,6 @@
   <div class="section">
     <div class="section-title">📦 Recent Orders</div>
     <div id="recent-orders-list" class="card-list"></div>
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
   </div>
 </div>
 
@@ -370,12 +345,6 @@
     <button class="btn green" onclick="openModal('modal-prod')">+ Record Production</button>
     <div id="production-list" class="card-list" style="margin-top:16px;"></div>
   </div>
-<<<<<<< HEAD
-  <div class="header-date">
-    <div class="day" id="header-day">Loading...</div>
-    <div id="header-date">---</div>
-    <div id="header-stock" style="font-size:11px;color:var(--cyan);font-weight:600;margin-top:1px;"></div>
-=======
 </div>
 
 <!-- ══════════════ LOADING ══════════════ -->
@@ -384,37 +353,9 @@
     <div class="section-title">🚚 Loading</div>
     <button class="btn green" onclick="openModal('modal-load')">+ Record Loading</button>
     <div id="loading-list" class="card-list" style="margin-top:16px;"></div>
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
   </div>
 </div>
 
-<<<<<<< HEAD
-<!-- MAIN CONTENT -->
-<main class="main">
-  <section id="sec-dashboard"  class="section active"><div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div></section>
-  <section id="sec-production" class="section"><div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div></section>
-  <section id="sec-loading"    class="section"><div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div></section>
-  <section id="sec-orders"     class="section"><div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div></section>
-  <section id="sec-finance"    class="section"><div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div></section>
-</main>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item active" data-sec="dashboard"  onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">HOME</span></button>
-  <button class="nav-item"        data-sec="production" onclick="navigate('production')"><span class="nav-icon">🏭</span><span class="nav-label">PRODUCE</span></button>
-  <button class="nav-item"        data-sec="loading"    onclick="navigate('loading')"><span class="nav-icon">🚚</span><span class="nav-label">LOAD</span></button>
-  <button class="nav-item"        data-sec="orders"     onclick="navigate('orders')" style="position:relative;">
-    <span class="nav-icon">📦</span><span class="nav-label">ORDERS</span>
-    <span id="orders-badge" class="nav-badge" style="display:none">0</span>
-  </button>
-  <button class="nav-item"        data-sec="finance"    onclick="navigate('finance')"><span class="nav-icon">💸</span><span class="nav-label">FINANCE</span></button>
-</nav>
-
-<!-- ===== MODAL: ADD PRODUCTION ===== -->
-<div id="modal-prod" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-handle"></div>
-=======
 <!-- ══════════════ ORDERS ══════════════ -->
 <div class="page" id="page-orders">
   <div class="section">
@@ -456,7 +397,6 @@
 <!-- ══════════════ MODAL: PRODUCTION ══════════════ -->
 <div class="modal" id="modal-prod">
   <div class="modal-box">
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     <div class="modal-title">🏭 Record Production</div>
     <div class="form-group">
       <label class="form-label">Date</label>
@@ -464,18 +404,10 @@
     </div>
     <div class="form-row">
       <div class="form-group">
-<<<<<<< HEAD
-        <label class="form-label">Roll Number *</label>
-        <select class="form-select" id="p-roll">
-          <option value="">Select Roll</option>
-          <option value="1">Roll 1</option><option value="2">Roll 2</option>
-          <option value="3">Roll 3</option><option value="4">Roll 4</option><option value="5">Roll 5</option>
-=======
         <label class="form-label">Roll #</label>
         <select class="form-select" id="prod-roll">
           <option>1</option><option>2</option><option>3</option>
           <option>4</option><option>5</option>
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
         </select>
       </div>
       <div class="form-group">
@@ -487,17 +419,6 @@
       <label class="form-label">Notes (optional)</label>
       <input type="text" class="form-input" id="prod-notes" placeholder="e.g. Machine issue">
     </div>
-<<<<<<< HEAD
-    <button class="btn btn-primary" onclick="submitProduction()">✅ Save Production</button>
-    <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-prod')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
-  </div>
-</div>
-
-<!-- ===== MODAL: ADD LOADING ===== -->
-<div id="modal-load" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-handle"></div>
-=======
     <button class="btn green" onclick="saveProd()">Save Production</button>
     <button class="btn ghost" onclick="closeModal('modal-prod')">Cancel</button>
   </div>
@@ -506,7 +427,6 @@
 <!-- ══════════════ MODAL: LOADING ══════════════ -->
 <div class="modal" id="modal-load">
   <div class="modal-box">
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     <div class="modal-title">🚚 Record Loading</div>
     <div class="form-group">
       <label class="form-label">Date</label>
@@ -530,59 +450,6 @@
       <label class="form-label">Notes (optional)</label>
       <input type="text" class="form-input" id="load-notes">
     </div>
-<<<<<<< HEAD
-    <button class="btn btn-primary" onclick="submitLoading()">✅ Save Loading</button>
-    <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-load')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
-  </div>
-</div>
-
-<!-- ===== MODAL: ADD CUSTOMER ===== -->
-<div id="modal-customer" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">👤 Add Customer</div>
-    <div class="form-group">
-      <label class="form-label">Customer Name *</label>
-      <input type="text" class="form-input" id="c-name" placeholder="Full name">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Phone Number</label>
-      <input type="tel" class="form-input" id="c-phone" placeholder="e.g. 0244000000">
-    </div>
-    <button class="btn btn-primary" onclick="submitCustomer()">✅ Add Customer</button>
-    <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-customer')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
-  </div>
-</div>
-
-<!-- ===== MODAL: PLACE ORDER (IMPROVED CUSTOMER SELECTION) ===== -->
-<div id="modal-order" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📦 Place Order</div>
-
-    <!-- CUSTOMER SEARCH -->
-    <div class="form-group">
-      <label class="form-label">Customer *
-        <button onclick="closeModal('modal-order');openModal('modal-customer')"
-          style="float:right;background:none;border:none;color:var(--blue-light);font-size:12px;cursor:pointer;text-decoration:underline;">+ Add New</button>
-      </label>
-
-      <!-- Selected display -->
-      <div id="selected-cust-display" style="
-        background:rgba(0,0,0,0.25);border:1.5px solid rgba(66,165,245,0.2);
-        border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:14px;">
-        <span style="color:var(--text-muted);">No customer selected yet</span>
-      </div>
-
-      <!-- Search input -->
-      <input type="text" class="form-input" id="o-cust-search"
-        placeholder="🔍 Type name or phone to search..."
-        oninput="filterCustomerDropdown(this.value)"
-        autocomplete="off" style="margin-bottom:0;">
-
-      <!-- Dropdown list -->
-      <div id="cust-dropdown" class="cust-dd"></div>
-=======
     <button class="btn green" onclick="saveLoad()">Save Loading</button>
     <button class="btn ghost" onclick="closeModal('modal-load')">Cancel</button>
   </div>
@@ -595,7 +462,6 @@
     <div class="form-group">
       <label class="form-label">Customer Name</label>
       <input type="text" class="form-input" id="order-customer" placeholder="Full name">
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     </div>
 
     <div class="form-group">
@@ -626,18 +492,6 @@
       <label class="form-label">Notes (optional)</label>
       <input type="text" class="form-input" id="order-notes">
     </div>
-<<<<<<< HEAD
-    <button class="btn btn-primary" onclick="submitOrder()">✅ Place Order</button>
-    <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-order')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
-  </div>
-</div>
-
-<!-- ===== MODAL: ADD DEBTOR ===== -->
-<div id="modal-debtor" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">💸 Add Debtor / Credit</div>
-=======
     <div class="alert" id="stock-alert"></div>
     <button class="btn green" onclick="saveOrder()">Place Order</button>
     <button class="btn ghost" onclick="closeModal('modal-order')">Cancel</button>
@@ -649,45 +503,12 @@
   <div class="modal-box">
     <div class="modal-title">💳 Record Payment</div>
     <div id="pay-details" style="margin-bottom:16px;font-size:14px;color:var(--muted);line-height:1.8;"></div>
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     <div class="form-group">
       <label class="form-label">Amount Received (GH₵)</label>
       <input type="number" class="form-input" id="pay-amount" step="0.1" placeholder="0.00">
     </div>
-<<<<<<< HEAD
-    <div class="form-group">
-      <label class="form-label">Phone Number</label>
-      <input type="tel" class="form-input" id="d-phone" placeholder="e.g. 0244000000">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Type *</label>
-      <select class="form-select" id="d-type" onchange="toggleDebtorType()">
-        <option value="owes_money">💰 Owes You Money</option>
-        <option value="owes_water">💧 You Owe Them Water (prepaid)</option>
-      </select>
-    </div>
-    <div id="d-amount-wrap" class="form-group">
-      <label class="form-label">Amount (GH₵) *</label>
-      <input type="number" class="form-input" id="d-amount" placeholder="e.g. 500.00" step="0.01" min="0">
-    </div>
-    <div id="d-bags-wrap" class="form-group" style="display:none">
-      <label class="form-label">Bags Owed *</label>
-      <input type="number" class="form-input" id="d-bags" placeholder="Number of bags" min="1">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Date *</label>
-      <input type="date" class="form-input" id="d-date">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Description / Note</label>
-      <input type="text" class="form-input" id="d-desc" placeholder="What is this for?">
-    </div>
-    <button class="btn btn-primary" onclick="submitDebtor()">✅ Save Record</button>
-    <button class="btn btn-ghost btn-primary" onclick="closeModal('modal-debtor')" style="background:transparent;border:1px solid var(--card-border);margin-top:8px;">Cancel</button>
-=======
     <button class="btn green" onclick="submitPayment()">Record Payment</button>
     <button class="btn ghost" onclick="closeModal('modal-pay')">Cancel</button>
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
   </div>
 </div>
 
@@ -714,24 +535,6 @@
 </nav>
 
 <script>
-<<<<<<< HEAD
-// ===== PWA INSTALL PROMPT =====
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault(); deferredPrompt = e;
-  const dismissed = localStorage.getItem('nsupure_install_dismissed');
-  if (!dismissed) setTimeout(()=>{ document.getElementById('install-banner').style.display='block'; }, 2000);
-});
-function installApp() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(result=>{
-      if (result.outcome==='accepted') {
-        showToast('🎉 App installed! Check your home screen.','success');
-        document.getElementById('install-banner').style.display='none';
-      }
-      deferredPrompt=null;
-=======
 // ══════════════════════════════════════════
 //  DATABASE
 // ══════════════════════════════════════════
@@ -795,7 +598,6 @@ const DB = {
       c.phone = c.phone || o.phone || '';
       c.stars = calcStars(c.totalBags);
       c.tier  = getTier(c.totalBags);
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
     });
     this.save();
   }
@@ -940,70 +742,9 @@ function calcOrderTotal() {
     al.textContent = `⚠️ Only ${inStock} bags in stock – this order requires ${bags}`;
     al.classList.add('show');
   } else {
-<<<<<<< HEAD
-    alert('To install:\n\n📱 Android Chrome:\nTap the 3-dot menu (⋮) → "Add to Home screen"\n\n🍎 iPhone Safari:\nTap the Share button → "Add to Home Screen"');
+    al.classList.remove('show');
   }
 }
-function dismissInstall() {
-  document.getElementById('install-banner').style.display='none';
-  localStorage.setItem('nsupure_install_dismissed','1');
-}
-window.addEventListener('appinstalled', ()=>{
-  document.getElementById('install-banner').style.display='none';
-  showToast('✅ NSUPURE installed on your device!','success');
-});
-</script>
-
-<style>
-@keyframes slideUp {
-  from { opacity:0; transform:translateY(30px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* Date quick filter buttons */
-.date-quick-bar {
-  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;
-}
-.dq-btn {
-  padding: 5px 12px; border-radius: 20px; border: 1px solid var(--card-border);
-  background: rgba(0,0,0,0.2); color: var(--text-muted);
-  font-family: var(--font-main); font-size: 12px; font-weight: 600;
-  cursor: pointer; transition: all 0.18s; white-space: nowrap;
-}
-.dq-btn.dq-active, .dq-btn:active {
-  background: var(--blue); border-color: var(--blue-light); color: white;
-}
-
-/* Customer dropdown */
-.cust-dd {
-  max-height: 200px; overflow-y: auto;
-  border: 1px solid var(--card-border); border-radius: 10px;
-  margin-top: 4px; display: none;
-  background: var(--bg2);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-}
-.cust-dd.dd-open { display: block; }
-.cust-option {
-  padding: 10px 14px; cursor: pointer; border-bottom: 1px solid rgba(66,165,245,0.1);
-  transition: background 0.15s;
-}
-.cust-option:last-child { border-bottom: none; }
-.cust-option:hover, .cust-option:active { background: rgba(21,101,192,0.2); }
-.cust-option-name { font-size: 14px; font-weight: 600; color: var(--text); }
-.cust-option-phone { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-/* Stock indicator */
-.stock-indicator {
-  background: rgba(0,180,216,0.1); border: 1px solid rgba(0,180,216,0.25);
-  border-radius: 10px; padding: 9px 14px;
-  font-size: 13px; color: var(--cyan); font-weight: 600;
-  margin-bottom: 10px; text-align: center;
-}
-.stock-indicator.stock-low {
-  background: rgba(255,82,82,0.1); border-color: rgba(255,82,82,0.3); color: var(--danger);
-}
-</style>
-=======
     al.classList.remove('show');
   }
 }
@@ -1333,6 +1074,5 @@ function init() {
 
 init();
 </script>
->>>>>>> abd99d7fd6c27950d9c3eaeb36fa7ecd2957662b
 </body>
 </html>
